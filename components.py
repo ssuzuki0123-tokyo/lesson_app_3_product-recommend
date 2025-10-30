@@ -59,7 +59,9 @@ def display_product(result):
 
     # LLMレスポンスのテキストを辞書に変換
     product_lines = result[0].page_content.split("\n")
+    print(product_lines)
     product = {item.split(": ")[0]: item.split(": ")[1] for item in product_lines}
+    print(product)
 
     st.markdown("以下の商品をご提案いたします。")
 
@@ -68,6 +70,13 @@ def display_product(result):
             商品名：{product['name']}（商品ID: {product['id']}）\n
             価格：{product['price']}
     """)
+
+    #  在庫状況に応じたメッセージを表示
+    if product['stock_status'] == "残りわずか":
+        st.warning("ご好評につき、在庫が残りわずかです。ご購入を希望の場合、お早目の注文をおすすめいたします。", icon="⚠️")
+
+    elif product['stock_status'] == "なし":
+        st.error("申し訳ございませんが、本商品は在庫切れとなっております。入荷までもうしばらくお待ちください。", icon="⚠️")
 
     # 「商品カテゴリ」と「メーカー」と「ユーザー評価」
     st.code(f"""
